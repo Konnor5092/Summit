@@ -1,0 +1,59 @@
+# Build outputs
+**/bin
+**/dist
+**/publish_output
+**/.env
+**/.env.*.local
+!/.env
+
+# Test outputs
+**/pact-logs
+**/coverage
+**/junit.xml
+pact-logs/
+**/cypress/videos
+**/cypress/screenshots/
+**/cypress/output/
+
+# Dependancies
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/node_modules
+**/lerna-debug.log
+**/debug.log
+
+# IDE configs
+**/.vs
+**/.vscode/*
+**/obj
+**/*.sln.user
+**/*.csproj.user
+**/*.ncrunchsolution.user
+**/.idea/
+**/.idea/
+.vscode/
+**/*.sln.DotSettings.user
+
+# OS
+**/.DS_Store
+
+# Other
+**/*.cache
+*.orig
+
+# Includes
+!**/.vscode/settings.json
+!**/.vscode/launch.json
+
+# Project Rider
+**/.editorconfig
+
+# Terraform
+**/.terraform
+**.tfstate
+**.tfstate.backup*
+
+# local appsettings
+appsettings-local.jsonc
+appsettings.LocalSecrets.json
