@@ -7,4 +7,4 @@ build_property.InvariantGlobalization =
 build_property.PlatformNeutralAssembly = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Summit.Platform.WebHostCustomization
-build_property.ProjectDir = C:\Repos\Summit\domain-services\platform\Summit.Platform\Summit.Platform.WebHostCustomization\
+build_property.ProjectDir = c:\Repos\Summit\domain-services\platform\Summit.Platform\Summit.Platform.WebHostCustomization\
