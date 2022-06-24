@@ -14,8 +14,4 @@
     <ProjectReference Include="..\..\..\platform\Summit.Platform\Summit.Platform.WebHostCustomization\Summit.Platform.WebHostCustomization.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Infrastructure\SeedFiles\" />
-  </ItemGroup>
-
 </Project>
