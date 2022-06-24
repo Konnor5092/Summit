@@ -10,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 WebApplication app = builder.Build();
-app.MigrateDbContext();
+// app.MigrateDbContext();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
