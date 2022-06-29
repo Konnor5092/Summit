@@ -20,6 +20,5 @@ public class ListingContext : DbContext
             .Entity<Listing>()
             .Property(l => l.Type)
             .HasConversion(l => l.ToString(), l => (ListingType)Enum.Parse(typeof(ListingType), l));
-
     }
 }

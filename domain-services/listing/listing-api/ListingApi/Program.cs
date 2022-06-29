@@ -1,16 +1,24 @@
+using ListingApi.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Summit.Platform.WebHostCustomization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ListingContext>(options =>
+  options.UseSqlServer(builder.Configuration.GetConnectionString("ListingContext")));
 
 WebApplication app = builder.Build();
-// app.MigrateDbContext();
+
+var context = app.Services.GetRequiredService<ListingContext>();
+
+app.MigrateDbContext<ListingContext>(async (context, services) =>
+{
+    context.Database.Migrate();
+    await new ListingSeed().SeedAsync(context, app.Environment, app.Services.GetRequiredService<ILogger<ListingSeed>>());
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

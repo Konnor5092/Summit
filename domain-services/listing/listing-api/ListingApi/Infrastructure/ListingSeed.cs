@@ -1,15 +1,33 @@
-﻿using ListingApi.Models;
+﻿using ListingApi.Extensions;
+using ListingApi.Models;
+using Microsoft.Data.SqlClient;
+using Polly;
+using Polly.Retry;
+using System.Text.RegularExpressions;
 
 namespace ListingApi.Infrastructure;
 
 public class ListingSeed
 {
+    public async Task SeedAsync(ListingContext context, IWebHostEnvironment env, ILogger<ListingSeed> logger)
+    {
+        var policy = CreatePolicy(logger, nameof(ListingSeed));
+
+        await policy.ExecuteAsync(async () =>
+        {
+            if (!context.Listings.Any())
+            {
+                await context.Listings.AddRangeAsync(GetListingsFromFile(env.ContentRootPath, logger));
+                await context.SaveChangesAsync();
+            }
+        });
+    }
 
     private IEnumerable<Listing> GetListingsFromFile(string contentRootPath, ILogger<ListingSeed> logger)
     {
         string csvListings = Path.Combine(contentRootPath, "Infrastructure", "SeedFiles", "Listings.csv");
 
-        string[] csvHeaders;
+        string[] csvHeaders = new string[] { };
 
         try
         {
@@ -22,7 +40,12 @@ public class ListingSeed
             // Get preconfiguredlistings
         }
 
-        //return File.ReadAllLines(csvListings).Skip(1).
+        return File.ReadAllLines(csvListings)
+                        .Skip(1) // skip header row
+                        .Select(row => Regex.Split(row, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"))
+                        .SelectTry(column => CreateListing(column, csvHeaders))
+                        .OnCaughtException(ex => { logger.LogError(ex, "EXCEPTION ERROR: {Message}", ex.Message); return null; })
+                        .Where(x => x != null);
     }
 
     private Listing CreateListing(string[] column, string[] headers)
@@ -68,5 +91,18 @@ public class ListingSeed
         }
 
         return csvheaders;
+    }
+
+    private AsyncRetryPolicy CreatePolicy(ILogger<ListingSeed> logger, string prefix, int retries = 3)
+    {
+        return Policy.Handle<SqlException>().
+            WaitAndRetryAsync(
+                retryCount: retries,
+                sleepDurationProvider: retry => TimeSpan.FromSeconds(5),
+                onRetry: (exception, timeSpan, retry, ctx) =>
+                {
+                    logger.LogWarning(exception, "[{prefix}] Exception {ExceptionType} with message {Message} detected on attempt {retry} of {retries}", prefix, exception.GetType().Name, exception.Message, retry, retries);
+                }
+            );
     }
 }
