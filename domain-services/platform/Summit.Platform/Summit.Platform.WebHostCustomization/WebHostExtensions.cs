@@ -25,7 +25,7 @@ namespace Summit.Platform.WebHostCustomization
                 var policy = Policy
                     .Handle<SqlException>()
                     .WaitAndRetry(10, retryAttempt => TimeSpan.FromSeconds(1)
-                        ,(exception, timeSpan) => 
+                        , (exception, timeSpan) =>
                         {
                             logger.LogInformation("Attempting database migration for {DbContextName}", contextName);
                         });

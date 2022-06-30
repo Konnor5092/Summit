@@ -31,7 +31,7 @@ public class ListingSeed
 
         try
         {
-            string[] headers = { "Id", "Name", "Description", "Name", "Price", "Type" };
+            string[] headers = { "Id", "Name", "Description", "Price", "Type" };
             csvHeaders = GetHeaders(csvListings, headers);
         }
         catch (Exception ex)
@@ -60,8 +60,8 @@ public class ListingSeed
             Id = Guid.Parse(column[Array.IndexOf(headers, "id")].Trim('"').Trim()),
             Name = column[Array.IndexOf(headers, "name")].Trim('"').Trim(),
             Description = column[Array.IndexOf(headers, "description")].Trim('"').Trim(),
-            Price = int.Parse(column[Array.IndexOf(headers, "Price")].Trim('"').Trim()),
-            Type = (ListingType)Enum.Parse(typeof(ListingType), column[Array.IndexOf(headers, "Price")].Trim('"').Trim())
+            Price = int.Parse(column[Array.IndexOf(headers, "price")].Trim('"').Trim()),
+            Type = (ListingType)Enum.Parse(typeof(ListingType), column[Array.IndexOf(headers, "type")].Trim('"').Trim())
         };
     }
 
@@ -84,7 +84,7 @@ public class ListingSeed
 
         foreach (var requiredHeader in requiredHeaders)
         {
-            if (!csvheaders.Contains(requiredHeader))
+            if (!csvheaders.Contains(requiredHeader.ToLower()))
             {
                 throw new Exception($"does not contain required header '{requiredHeader}'");
             }

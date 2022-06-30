@@ -10,14 +10,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ListingContext>(options =>
   options.UseSqlServer(builder.Configuration.GetConnectionString("ListingContext")));
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 
-var context = app.Services.GetRequiredService<ListingContext>();
-
-app.MigrateDbContext<ListingContext>(async (context, services) =>
+app.MigrateDbContext<ListingContext>((context, services) =>
 {
-    context.Database.Migrate();
-    await new ListingSeed().SeedAsync(context, app.Environment, app.Services.GetRequiredService<ILogger<ListingSeed>>());
+    new ListingSeed().SeedAsync(context, app.Environment, app.Services.GetRequiredService<ILogger<ListingSeed>>()).Wait();
 });
 
 // Configure the HTTP request pipeline.
