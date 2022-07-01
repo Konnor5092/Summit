@@ -43,7 +43,7 @@ public class ListingSeed
         return File.ReadAllLines(csvListings)
                         .Skip(1) // skip header row
                         .Select(row => Regex.Split(row, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"))
-                        .SelectTry(column => CreateListing(column, csvHeaders))
+                        .SelectTry<string[], Listing>(column => CreateListing(column, csvHeaders))
                         .OnCaughtException(ex => { logger.LogError(ex, "EXCEPTION ERROR: {Message}", ex.Message); return null; })
                         .Where(x => x != null);
     }
